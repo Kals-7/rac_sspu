@@ -15,7 +15,7 @@
   <body>
     <header class="site-header">
       <div class="container header-inner">
-        <img src="favicon.svg" alt="RAC Symbiosis Skills and Professional University Logo" class="logo-img" width="80" height="80" />
+        <img src="Screenshot 2025-08-19 233452.png" alt="RAC Symbiosis Skills and Professional University Logo" class="logo-img" width="80" height="80" />
         <a href="#top" class="brand" aria-label="Rotaract Club of SSPU home" style="margin-left:1rem;">Rotaract Club of SSPU</a>
         <nav class="main-nav" aria-label="Primary">
           <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i></button>
@@ -25,13 +25,23 @@
             <li><a href="#membership"><i class="fas fa-users" aria-hidden="true"></i> Membership</a></li>
             <li><a href="#resources"><i class="fas fa-book" aria-hidden="true"></i> Resources</a></li>
             <li>
+              <button id="member-login-btn" class="btn" type="button" aria-label="Member Login">
+                <i class="fas fa-user" aria-hidden="true"></i> Member Login
+              </button>
+            </li>
+            <li>
               <button id="bod-login-btn" class="btn bod-login-btn" type="button" aria-label="Board of Directors Login">
                 <i class="fas fa-user-shield" aria-hidden="true"></i> BOD Login
               </button>
             </li>
             <li>
+              <span id="member-display" style="display:none; color: var(--primary); font-weight: 600; padding: 8px 12px;">
+                <i class="fas fa-user" aria-hidden="true"></i> <span id="logged-member"></span>
+              </span>
+            </li>
+            <li>
               <span id="username-display" style="display:none; color: var(--accent); font-weight: 600; padding: 8px 12px;">
-                <i class="fas fa-user" aria-hidden="true"></i> <span id="logged-username"></span>
+                <i class="fas fa-user-shield" aria-hidden="true"></i> <span id="logged-username"></span>
               </span>
             </li>
             <li>
@@ -47,7 +57,7 @@
     <main id="top">
       <section class="hero">
         <div class="container hero-inner">
-          <img src="favicon.svg" alt="Rotaract Club of SSPU Logo" class="hero-logo" width="220" height="220" />
+          <img src="Screenshot 2025-08-19 233452.png" alt="Rotaract Club of SSPU Logo" class="hero-logo" width="220" height="220" />
           <h1>Welcome to Rotaract Club of SSPU</h1>
           <p>Connecting members through activities, growth and community impact.</p>
           <div class="hero-actions">
@@ -303,6 +313,50 @@
         </div>
       </section>
     </main>
+
+    <!-- Member Login Modal -->
+    <div id="member-modal" class="modal">
+      <div class="modal-content">
+        <button type="button" class="close" aria-label="Close modal">&times;</button>
+        <div id="member-login-form">
+          <h2>Member Login</h2>
+          <form id="member-login" novalidate>
+            <label for="member-email"><i class="fas fa-envelope" aria-hidden="true"></i> Email</label>
+            <input type="email" id="member-email" name="member-email" required>
+            <label for="member-password"><i class="fas fa-lock" aria-hidden="true"></i> Password</label>
+            <input type="password" id="member-password" name="member-password" required>
+            <button type="submit" class="btn primary"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</button>
+          </form>
+          <p style="text-align: center; margin-top: 15px;">
+            Don't have an account? <a href="#" id="show-register" style="color: var(--primary);">Register here</a>
+          </p>
+        </div>
+        <div id="member-register-form" style="display: none;">
+          <h2>Member Registration</h2>
+          <form id="member-register" novalidate>
+            <label for="reg-name"><i class="fas fa-user" aria-hidden="true"></i> Full Name</label>
+            <input type="text" id="reg-name" name="reg-name" required>
+            <label for="reg-email"><i class="fas fa-envelope" aria-hidden="true"></i> Email</label>
+            <input type="email" id="reg-email" name="reg-email" required>
+            <label for="reg-password"><i class="fas fa-lock" aria-hidden="true"></i> Password</label>
+            <input type="password" id="reg-password" name="reg-password" required minlength="6">
+            <label for="reg-confirm"><i class="fas fa-lock" aria-hidden="true"></i> Confirm Password</label>
+            <input type="password" id="reg-confirm" name="reg-confirm" required minlength="6">
+            <label for="reg-interest"><i class="fas fa-lightbulb" aria-hidden="true"></i> Interest Area</label>
+            <select id="reg-interest" name="reg-interest">
+              <option value="Leadership">Leadership</option>
+              <option value="Events">Events</option>
+              <option value="Community">Community</option>
+              <option value="Operations">Operations</option>
+            </select>
+            <button type="submit" class="btn primary"><i class="fas fa-user-plus" aria-hidden="true"></i> Register</button>
+          </form>
+          <p style="text-align: center; margin-top: 15px;">
+            Already have an account? <a href="#" id="show-login" style="color: var(--primary);">Login here</a>
+          </p>
+        </div>
+      </div>
+    </div>
 
     <!-- BOD Login Modal -->
     <div id="login-modal" class="modal">

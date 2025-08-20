@@ -35,9 +35,10 @@ app.use('/api/', limiter);
 const dataDir = path.join(__dirname, 'data');
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 const db = new loki(path.join(dataDir, 'db.json'), { autoload: true, autosave: true, autosaveInterval: 4000 });
-let memberships;
+let memberships, members;
 db.loadDatabase({}, () => {
   memberships = db.getCollection('memberships') || db.addCollection('memberships', { indices: ['email'] });
+  members = db.getCollection('members') || db.addCollection('members', { indices: ['email'] });
 });
 
 // Health check
@@ -97,6 +98,86 @@ app.delete('/api/memberships/:id', verifyToken, (req, res) => {
   memberships.remove(doc);
   db.saveDatabase();
   res.status(204).end();
+});
+
+// Member Registration
+const memberRegisterSchema = z.object({
+  name: z.string().min(1).max(120),
+  email: z.string().email().max(180),
+  password: z.string().min(6).max(255),
+  interest: z.string().max(120).optional().default('')
+});
+
+app.post('/api/members/register', (req, res) => {
+  const parsed = memberRegisterSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: 'Invalid registration data' });
+  
+  const { name, email, password, interest } = parsed.data;
+  
+  // Check if member already exists
+  const existingMember = members.findOne({ email });
+  if (existingMember) return res.status(409).json({ error: 'Email already registered' });
+  
+  // Create new member
+  const member = {
+    id: uuidv4(),
+    name,
+    email,
+    password, // In production, hash this password
+    interest,
+    registeredAt: new Date().toISOString(),
+    isActive: true
+  };
+  
+  members.insert(member);
+  db.saveDatabase();
+  
+  // Generate token
+  const token = jwt.sign({ sub: member.id, email: member.email, role: 'member' }, JWT_SECRET, { expiresIn: '30d' });
+  
+  res.status(201).json({ 
+    token, 
+    member: { id: member.id, name: member.name, email: member.email, interest: member.interest }
+  });
+});
+
+// Member Login
+const memberLoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1)
+});
+
+app.post('/api/members/login', (req, res) => {
+  const parsed = memberLoginSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: 'Invalid login data' });
+  
+  const { email, password } = parsed.data;
+  
+  // Find member
+  const member = members.findOne({ email, isActive: true });
+  if (!member || member.password !== password) {
+    return res.status(401).json({ error: 'Invalid email or password' });
+  }
+  
+  // Generate token
+  const token = jwt.sign({ sub: member.id, email: member.email, role: 'member' }, JWT_SECRET, { expiresIn: '30d' });
+  
+  res.json({ 
+    token, 
+    member: { id: member.id, name: member.name, email: member.email, interest: member.interest }
+  });
+});
+
+// Get member profile (protected route)
+app.get('/api/members/profile', verifyToken, (req, res) => {
+  if (req.user.role !== 'member') return res.status(403).json({ error: 'Access denied' });
+  
+  const member = members.findOne({ id: req.user.sub });
+  if (!member) return res.status(404).json({ error: 'Member not found' });
+  
+  res.json({ 
+    member: { id: member.id, name: member.name, email: member.email, interest: member.interest }
+  });
 });
 
 // Gallery listing

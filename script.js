@@ -58,6 +58,201 @@ document.addEventListener('DOMContentLoaded', () => {
     hideModal();
   };
 
+  // Member modal functionality
+  const memberModal = document.getElementById('member-modal');
+  const memberLoginForm = document.getElementById('member-login-form');
+  const memberRegisterForm = document.getElementById('member-register-form');
+  const showRegisterLink = document.getElementById('show-register');
+  const showLoginLink = document.getElementById('show-login');
+
+  function showMemberModal() {
+    if (!memberModal) return;
+    memberModal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function hideMemberModal() {
+    if (!memberModal) return;
+    memberModal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // Member login button
+  const memberLoginBtn = document.getElementById('member-login-btn');
+  if (memberLoginBtn) {
+    memberLoginBtn.addEventListener('click', () => {
+      showMemberModal();
+      memberLoginForm.style.display = 'block';
+      memberRegisterForm.style.display = 'none';
+    });
+  }
+
+  // Toggle between login and register forms
+  if (showRegisterLink) {
+    showRegisterLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      memberLoginForm.style.display = 'none';
+      memberRegisterForm.style.display = 'block';
+    });
+  }
+
+  if (showLoginLink) {
+    showLoginLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      memberRegisterForm.style.display = 'none';
+      memberLoginForm.style.display = 'block';
+    });
+  }
+
+  // Close member modal
+  const memberCloseBtn = memberModal?.querySelector('.close');
+  if (memberCloseBtn) {
+    memberCloseBtn.addEventListener('click', hideMemberModal);
+  }
+
+  // Member modal backdrop click
+  if (memberModal) {
+    memberModal.addEventListener('click', (e) => {
+      if (e.target === memberModal) hideMemberModal();
+    });
+  }
+
+  // Member Registration Form Handler
+  const memberRegisterFormEl = document.getElementById('member-register');
+  if (memberRegisterFormEl) {
+    memberRegisterFormEl.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = memberRegisterFormEl.querySelector('#reg-name').value.trim();
+      const email = memberRegisterFormEl.querySelector('#reg-email').value.trim();
+      const password = memberRegisterFormEl.querySelector('#reg-password').value;
+      const confirmPassword = memberRegisterFormEl.querySelector('#reg-confirm').value;
+      const interest = memberRegisterFormEl.querySelector('#reg-interest').value;
+
+      if (!name || !email || !password) {
+        showToast('Please fill all required fields', true);
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showToast('Passwords do not match', true);
+        return;
+      }
+
+      if (password.length < 6) {
+        showToast('Password must be at least 6 characters', true);
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/api/members/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password, interest })
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.error || 'Registration failed');
+        }
+
+        const data = await res.json();
+        
+        // Store member session
+        sessionStorage.setItem('memberToken', data.token);
+        sessionStorage.setItem('memberAuthenticated', 'true');
+        sessionStorage.setItem('memberData', JSON.stringify(data.member));
+
+        showToast(`Welcome, ${data.member.name}! Registration successful.`);
+        hideMemberModal();
+        updateMemberUI(data.member);
+
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    });
+  }
+
+  // Member Login Form Handler
+  const memberLoginFormEl = document.getElementById('member-login');
+  if (memberLoginFormEl) {
+    memberLoginFormEl.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = memberLoginFormEl.querySelector('#member-email').value.trim();
+      const password = memberLoginFormEl.querySelector('#member-password').value;
+
+      if (!email || !password) {
+        showToast('Please enter email and password', true);
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/api/members/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.error || 'Login failed');
+        }
+
+        const data = await res.json();
+        
+        // Store member session
+        sessionStorage.setItem('memberToken', data.token);
+        sessionStorage.setItem('memberAuthenticated', 'true');
+        sessionStorage.setItem('memberData', JSON.stringify(data.member));
+
+        showToast(`Welcome back, ${data.member.name}!`);
+        hideMemberModal();
+        updateMemberUI(data.member);
+
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    });
+  }
+
+  // Update member UI
+  function updateMemberUI(member) {
+    const memberDisplay = document.getElementById('member-display');
+    const loggedMember = document.getElementById('logged-member');
+    const memberLoginBtn = document.getElementById('member-login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (memberDisplay) memberDisplay.style.display = '';
+    if (loggedMember) loggedMember.textContent = member.name;
+    if (memberLoginBtn) memberLoginBtn.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = '';
+  }
+
+  // Check for existing member session on load
+  if (sessionStorage.getItem('memberAuthenticated') === 'true') {
+    const memberData = JSON.parse(sessionStorage.getItem('memberData') || '{}');
+    if (memberData.name) {
+      updateMemberUI(memberData);
+    }
+  }
+
+  // Update logout function to handle both BOD and member logout
+  const originalBodLogout = window.bodLogout;
+  window.bodLogout = function() {
+    // Clear member session too
+    sessionStorage.removeItem('memberAuthenticated');
+    sessionStorage.removeItem('memberToken');
+    sessionStorage.removeItem('memberData');
+    
+    // Hide member display
+    const memberDisplay = document.getElementById('member-display');
+    const memberLoginBtn = document.getElementById('member-login-btn');
+    if (memberDisplay) memberDisplay.style.display = 'none';
+    if (memberLoginBtn) memberLoginBtn.style.display = '';
+    
+    // Call original BOD logout
+    if (originalBodLogout) originalBodLogout();
+  };
+
   // Debug logging
   console.log('BOD Login functions exposed:', {
     openLoginModal: typeof window.openLoginModal,
