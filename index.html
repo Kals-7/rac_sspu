@@ -362,14 +362,43 @@
     <div id="login-modal" class="modal">
       <div class="modal-content">
         <button type="button" class="close" aria-label="Close modal">&times;</button>
-        <h2>BOD Login</h2>
-        <form novalidate>
-          <label for="bod-username"><i class="fas fa-user" aria-hidden="true"></i> Username</label>
-          <input type="text" id="bod-username" name="bod-username" required>
-          <label for="bod-password"><i class="fas fa-lock" aria-hidden="true"></i> Password</label>
-          <input type="password" id="bod-password" name="bod-password" required>
-          <button type="submit" class="btn primary"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</button>
-        </form>
+        <div id="bod-login-form">
+          <h2>BOD Login</h2>
+          <form novalidate>
+            <label for="bod-username"><i class="fas fa-user" aria-hidden="true"></i> Username</label>
+            <input type="text" id="bod-username" name="bod-username" required>
+            <label for="bod-password"><i class="fas fa-lock" aria-hidden="true"></i> Password</label>
+            <input type="password" id="bod-password" name="bod-password" required>
+            <button type="submit" class="btn primary"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</button>
+          </form>
+          <p style="text-align: center; margin-top: 15px; color: var(--muted);">
+            Not a BOD member? <a href="#" id="show-member-register" style="color: var(--primary);">Register as Member</a>
+          </p>
+        </div>
+        <div id="bod-member-register-form" style="display: none;">
+          <h2>Member Registration</h2>
+          <form id="bod-member-register" novalidate>
+            <label for="bod-reg-name"><i class="fas fa-user" aria-hidden="true"></i> Full Name</label>
+            <input type="text" id="bod-reg-name" name="bod-reg-name" required>
+            <label for="bod-reg-email"><i class="fas fa-envelope" aria-hidden="true"></i> Email</label>
+            <input type="email" id="bod-reg-email" name="bod-reg-email" required>
+            <label for="bod-reg-password"><i class="fas fa-lock" aria-hidden="true"></i> Password</label>
+            <input type="password" id="bod-reg-password" name="bod-reg-password" required minlength="6">
+            <label for="bod-reg-confirm"><i class="fas fa-lock" aria-hidden="true"></i> Confirm Password</label>
+            <input type="password" id="bod-reg-confirm" name="bod-reg-confirm" required minlength="6">
+            <label for="bod-reg-interest"><i class="fas fa-lightbulb" aria-hidden="true"></i> Interest Area</label>
+            <select id="bod-reg-interest" name="bod-reg-interest">
+              <option value="Leadership">Leadership</option>
+              <option value="Events">Events</option>
+              <option value="Community">Community</option>
+              <option value="Operations">Operations</option>
+            </select>
+            <button type="submit" class="btn primary"><i class="fas fa-user-plus" aria-hidden="true"></i> Register</button>
+          </form>
+          <p style="text-align: center; margin-top: 15px;">
+            Back to <a href="#" id="show-bod-login" style="color: var(--primary);">BOD Login</a>
+          </p>
+        </div>
       </div>
     </div>
 

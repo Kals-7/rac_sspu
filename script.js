@@ -260,12 +260,127 @@ document.addEventListener('DOMContentLoaded', () => {
     showModalRequired: typeof showModalRequired
   });
 
+  // Debug member modal elements
+  console.log('Member modal elements:', {
+    memberModal: !!memberModal,
+    memberLoginForm: !!memberLoginForm,
+    memberRegisterForm: !!memberRegisterForm,
+    showRegisterLink: !!showRegisterLink,
+    showLoginLink: !!showLoginLink,
+    memberLoginBtn: !!document.getElementById('member-login-btn')
+  });
+
+  // Test function for member registration
+  window.testMemberRegistration = async function() {
+    try {
+      const res = await fetch(`${API_BASE}/api/members/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          name: 'Test User', 
+          email: 'test@example.com', 
+          password: 'password123', 
+          interest: 'Community' 
+        })
+      });
+      const data = await res.json();
+      console.log('Registration test result:', data);
+      return data;
+    } catch (err) {
+      console.error('Registration test error:', err);
+      return err;
+    }
+  };
+
+  // BOD Modal Member Registration functionality
+  const bodLoginForm = document.getElementById('bod-login-form');
+  const bodMemberRegisterForm = document.getElementById('bod-member-register-form');
+  const showMemberRegisterLink = document.getElementById('show-member-register');
+  const showBodLoginLink = document.getElementById('show-bod-login');
+
+  // Toggle between BOD login and member registration
+  if (showMemberRegisterLink) {
+    showMemberRegisterLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      bodLoginForm.style.display = 'none';
+      bodMemberRegisterForm.style.display = 'block';
+    });
+  }
+
+  if (showBodLoginLink) {
+    showBodLoginLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      bodMemberRegisterForm.style.display = 'none';
+      bodLoginForm.style.display = 'block';
+    });
+  }
+
+  // BOD Member Registration Form Handler
+  const bodMemberRegisterFormEl = document.getElementById('bod-member-register');
+  if (bodMemberRegisterFormEl) {
+    bodMemberRegisterFormEl.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = bodMemberRegisterFormEl.querySelector('#bod-reg-name').value.trim();
+      const email = bodMemberRegisterFormEl.querySelector('#bod-reg-email').value.trim();
+      const password = bodMemberRegisterFormEl.querySelector('#bod-reg-password').value;
+      const confirmPassword = bodMemberRegisterFormEl.querySelector('#bod-reg-confirm').value;
+      const interest = bodMemberRegisterFormEl.querySelector('#bod-reg-interest').value;
+
+      if (!name || !email || !password) {
+        showToast('Please fill all required fields', true);
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showToast('Passwords do not match', true);
+        return;
+      }
+
+      if (password.length < 6) {
+        showToast('Password must be at least 6 characters', true);
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/api/members/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password, interest })
+        });
+
+        if (!res.ok) {
+          const error = await res.json();
+          throw new Error(error.error || 'Registration failed');
+        }
+
+        const data = await res.json();
+        
+        // Store member session
+        sessionStorage.setItem('memberToken', data.token);
+        sessionStorage.setItem('memberAuthenticated', 'true');
+        sessionStorage.setItem('memberData', JSON.stringify(data.member));
+
+        showToast(`Welcome, ${data.member.name}! Registration successful.`);
+        hideModal(); // Close BOD modal
+        updateMemberUI(data.member);
+
+      } catch (err) {
+        showToast(err.message, true);
+      }
+    });
+  }
+
   // Add event listener as backup for BOD login button
   const bodLoginBtn = document.getElementById('bod-login-btn');
   if (bodLoginBtn) {
     bodLoginBtn.addEventListener('click', () => {
       console.log('BOD Login button clicked via event listener');
       showModalRequired();
+      // Reset to BOD login form when opening modal
+      if (bodLoginForm && bodMemberRegisterForm) {
+        bodLoginForm.style.display = 'block';
+        bodMemberRegisterForm.style.display = 'none';
+      }
     });
   }
 
