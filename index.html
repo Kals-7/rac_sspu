@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rotaract Club of SSPU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,800;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta name="theme-color" content="#b31217" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <img src="favicon.svg" alt="RAC Symbiosis Skills and Professional University Logo" class="logo-img" width="80" height="80" />
+        <a href="#top" class="brand" aria-label="Rotaract Club of SSPU home" style="margin-left:1rem;">Rotaract Club of SSPU</a>
+        <nav class="main-nav" aria-label="Primary">
+          <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i></button>
+          <ul class="nav-list">
+            <li><a href="#about"><i class="fas fa-info-circle" aria-hidden="true"></i> About</a></li>
+            <li><a href="#events"><i class="fas fa-calendar-alt" aria-hidden="true"></i> Events</a></li>
+            <li><a href="#membership"><i class="fas fa-users" aria-hidden="true"></i> Membership</a></li>
+            <li><a href="#resources"><i class="fas fa-book" aria-hidden="true"></i> Resources</a></li>
+            <li>
+              <button id="bod-login-btn" class="btn bod-login-btn" type="button" aria-label="Board of Directors Login">
+                <i class="fas fa-user-shield" aria-hidden="true"></i> BOD Login
+              </button>
+            </li>
+            <li>
+              <span id="username-display" style="display:none; color: var(--accent); font-weight: 600; padding: 8px 12px;">
+                <i class="fas fa-user" aria-hidden="true"></i> <span id="logged-username"></span>
+              </span>
+            </li>
+            <li>
+              <button id="logout-btn" class="btn" type="button" style="display:none" aria-label="Logout">
+                <i class="fas fa-right-from-bracket" aria-hidden="true"></i> Logout
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-inner">
+          <img src="favicon.svg" alt="Rotaract Club of SSPU Logo" class="hero-logo" width="220" height="220" />
+          <h1>Welcome to Rotaract Club of SSPU</h1>
+          <p>Connecting members through activities, growth and community impact.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#membership"><i class="fas fa-user-plus" aria-hidden="true"></i> Join Now</a>
+            <a class="btn" href="#events"><i class="fas fa-calendar" aria-hidden="true"></i> See Events</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="block" data-section="about">
+        <div class="container">
+          <div class="block-header">
+            <h2>About</h2>
+            <p>Learn what we stand for and who we are.</p>
+          </div>
+          <div class="subnav" role="tablist" aria-label="About subsections">
+            <button class="subtab selected" data-target="mission" role="tab" aria-selected="true">Mission</button>
+            <button class="subtab" data-target="vision" role="tab" aria-selected="false">Vision</button>
+            <button class="subtab" data-target="history" role="tab" aria-selected="false">History</button>
+            <button class="subtab" data-target="leadership" role="tab" aria-selected="false">Leadership</button>
+          </div>
+          <div class="subsections">
+            <article class="subsection active" data-subsection="mission" role="tabpanel">
+              <h3>Our Mission</h3>
+              <p>To foster collaboration, personal development and service through engaging programs and inclusive community.</p>
+            </article>
+            <article class="subsection" data-subsection="vision" role="tabpanel">
+              <h3>Our Vision</h3>
+              <p>A vibrant club where every member feels empowered to create positive change.</p>
+            </article>
+            <article class="subsection" data-subsection="history" role="tabpanel">
+              <h3>Our History</h3>
+              <p>Founded in 2024, we began with a small team passionate about impact. Today we host activities across campus and beyond.</p>
+            </article>
+            <article class="subsection" data-subsection="leadership" role="tabpanel">
+              <h3>Leadership</h3>
+              <div class="grid cards">
+                <div class="card"><h4>President</h4><p>Leads strategy and operations.</p></div>
+                <div class="card"><h4>Vice President</h4><p>Oversees programs and initiatives.</p></div>
+                <div class="card"><h4>Treasurer</h4><p>Manages budget and finance.</p></div>
+                <div class="card"><h4>Secretary</h4><p>Coordinates communication.</p></div>
+                <div class="card"><h4><i class="fas fa-hand-holding-heart"></i> Community Service Director</h4><p>Leads community outreach and service projects.</p></div>
+                <div class="card"><h4><i class="fas fa-users"></i> Club Service Director</h4><p>Strengthens club engagement and member experience.</p></div>
+                <div class="card"><h4><i class="fas fa-globe"></i> International Service Director</h4><p>Drives global collaboration and cultural exchange.</p></div>
+                <div class="card"><h4><i class="fas fa-user-graduate"></i> Professional Development Director</h4><p>Builds skills through training and mentorship.</p></div>
+                <div class="card"><h4><i class="fas fa-handshake"></i> Rotary–Rotaract Relationship Officer</h4><p>Fosters partnership with Rotary and external networks.</p></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="events" class="block" data-section="events">
+        <div class="container">
+          <div class="block-header">
+            <h2>Events</h2>
+            <p>Stay in the loop with what's happening.</p>
+          </div>
+          <div class="subnav" role="tablist" aria-label="Events subsections">
+            <button class="subtab selected" data-target="upcoming" role="tab" aria-selected="true">Upcoming</button>
+            <button class="subtab" data-target="past" role="tab" aria-selected="false">Past</button>
+            <button class="subtab" data-target="workshops" role="tab" aria-selected="false">Workshops</button>
+            <button class="subtab" data-target="competitions" role="tab" aria-selected="false">Competitions</button>
+          </div>
+          <div class="subsections">
+            <article class="subsection active" data-subsection="upcoming" role="tabpanel">
+              <div class="grid cards">
+                <div class="card">
+                  <h4><i class="fas fa-users"></i> CLUB ASSEMBLY</h4>
+                  <p>Kick off the semester. Fri, 7 PM.</p>
+                  <a class="btn small" href="#" role="button"><i class="fas fa-check" aria-hidden="true"></i> RSVP</a>
+                  <button class="btn small add-to-calendar" type="button" data-title="Welcome Meetup" data-start="2025-09-05T19:00:00" data-end="2025-09-05T21:00:00" data-location="Campus Center"><i class="fas fa-calendar-plus" aria-hidden="true"></i> Add to Calendar</button>
+                </div>
+                <div class="card">
+                  <h4><i class="fas fa-leaf"></i> CMD</h4>
+                  <p>Join our local clean-up. Sat, 9 AM.</p>
+                  <a class="btn small" href="#" role="button"><i class="fas fa-check" aria-hidden="true"></i> Sign Up</a>
+                  <button class="btn small add-to-calendar" type="button" data-title="Community Service Day" data-start="2025-09-06T09:00:00" data-end="2025-09-06T12:00:00" data-location="City Park"><i class="fas fa-calendar-plus" aria-hidden="true"></i> Add to Calendar</button>
+                </div>
+                <div class="card">
+                  <h4><i class="fas fa-microphone"></i> SAMYATI 3.0</h4>
+                  <p>Insights from industry leaders. Wed, 6 PM.</p>
+                  <a class="btn small" href="#" role="button"><i class="fas fa-ticket-alt" aria-hidden="true"></i> Get Ticket</a>
+                  <button class="btn small add-to-calendar" type="button" data-title="Guest Speaker" data-start="2025-09-10T18:00:00" data-end="2025-09-10T19:30:00" data-location="Auditorium"><i class="fas fa-calendar-plus" aria-hidden="true"></i> Add to Calendar</button>
+                </div>
+                <div class="card">
+                  <h4><i class="fas fa-glass-cheers"></i> Upcoming</h4>
+                  <p>Relax and network with members. Fri, 8 PM.</p>
+                  <a class="btn small" href="#" role="button"><i class="fas fa-users" aria-hidden="true"></i> Join Us</a>
+                  <button class="btn small add-to-calendar" type="button" data-title="Monthly Social" data-start="2025-09-12T20:00:00" data-end="2025-09-12T22:00:00" data-location="Club Lounge"><i class="fas fa-calendar-plus" aria-hidden="true"></i> Add to Calendar</button>
+                </div>
+              </div>
+            </article>
+            <article class="subsection" data-subsection="past" role="tabpanel">
+              <ul class="list">
+                <li><i class="fas fa-star" aria-hidden="true"></i> Annual Showcase 2024</li>
+                <li><i class="fas fa-chess-king" aria-hidden="true"></i> Leadership Summit</li>
+                <li><i class="fas fa-running" aria-hidden="true"></i> Charity Run</li>
+              </ul>
+            </article>
+            <article class="subsection" data-subsection="workshops" role="tabpanel">
+              <div class="grid cards">
+                <div class="card"><h4><i class="fas fa-comments" aria-hidden="true"></i> Public Speaking</h4><p>Practice sessions and feedback.</p></div>
+                <div class="card"><h4><i class="fas fa-tasks" aria-hidden="true"></i> Project Management</h4><p>Plan, execute, iterate.</p></div>
+                <div class="card"><h4><i class="fas fa-paint-brush" aria-hidden="true"></i> Design Basics</h4><p>Branding and visuals for clubs.</p></div>
+              </div>
+            </article>
+            <article class="subsection" data-subsection="competitions" role="tabpanel">
+              <div class="grid cards">
+                <div class="card"><h4><i class="fas fa-laptop-code" aria-hidden="true"></i> Hackathon</h4><p>48-hour innovation sprint.</p></div>
+                <div class="card"><h4><i class="fas fa-comments" aria-hidden="true"></i> Debate Cup</h4><p>Test your rhetoric.</p></div>
+                <div class="card"><h4><i class="fas fa-briefcase" aria-hidden="true"></i> Case Challenge</h4><p>Solve real-world problems.</p></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="membership" class="block" data-section="membership">
+        <div class="container">
+          <div class="block-header">
+            <h2>Membership</h2>
+            <p>Everything you need to join and get involved.</p>
+          </div>
+          <div class="subnav" role="tablist" aria-label="Membership subsections">
+            <button class="subtab selected" data-target="join" role="tab" aria-selected="true">Join Us</button>
+            <button class="subtab" data-target="benefits" role="tab" aria-selected="false">Benefits</button>
+            <button class="subtab" data-target="fees" role="tab" aria-selected="false">Fees</button>
+            <button class="subtab" data-target="faq" role="tab" aria-selected="false">FAQ</button>
+          </div>
+          <div class="subsections">
+            <article class="subsection active" data-subsection="join" role="tabpanel">
+              <form id="membership-form" class="form">
+                <div class="form-row">
+                  <label for="name"><i class="fas fa-user" aria-hidden="true"></i> Name</label>
+                  <input id="name" name="name" type="text" placeholder="Your full name" required />
+                </div>
+                <div class="form-row">
+                  <label for="email"><i class="fas fa-envelope" aria-hidden="true"></i> Email</label>
+                  <input id="email" name="email" type="email" placeholder="you@example.com" required />
+                </div>
+                <div class="form-row">
+                  <label for="interest"><i class="fas fa-lightbulb" aria-hidden="true"></i> Interest Area</label>
+                  <select id="interest" name="interest">
+                    <option value="Leadership">Leadership</option>
+                    <option value="Events">Events</option>
+                    <option value="Community">Community</option>
+                    <option value="Operations">Operations</option>
+                  </select>
+                </div>
+                <div class="form-actions">
+                  <button class="btn primary" type="submit"><i class="fas fa-paper-plane" aria-hidden="true"></i> Request Membership</button>
+                </div>
+                <p class="form-note">This demo saves requests locally; connect a backend or form service to enable submissions.</p>
+              </form>
+            </article>
+            <article class="subsection" data-subsection="benefits" role="tabpanel">
+              <ul class="list checks">
+                <li><i class="fas fa-user-graduate" aria-hidden="true"></i> Professional development and mentorship</li>
+                <li><i class="fas fa-calendar-check" aria-hidden="true"></i> Priority access to events and resources</li>
+                <li><i class="fas fa-crown" aria-hidden="true"></i> Leadership opportunities</li>
+                <li><i class="fas fa-hands-helping" aria-hidden="true"></i> Community service hours</li>
+              </ul>
+            </article>
+            <article class="subsection" data-subsection="fees" role="tabpanel">
+              <div class="grid cards">
+                <div class="card">
+                  <h4><i class="fas fa-user" aria-hidden="true"></i> Student</h4>
+                  <p class="price">₹300 / semester</p>
+                  <p>Basic membership benefits.</p>
+                </div>
+                <div class="card">
+                  <h4><i class="fas fa-star" aria-hidden="true"></i> Plus</h4>
+                  <p class="price">₹500 / semester</p>
+                  <p>Includes merch and workshop discounts.</p>
+                </div>
+                <div class="card">
+                  <h4><i class="fas fa-heart" aria-hidden="true"></i> Supporter</h4>
+                  <p class="price">₹1000 / semester</p>
+                  <p>Support the club and get recognition.</p>
+                </div>
+              </div>
+            </article>
+            <article class="subsection" data-subsection="faq" role="tabpanel">
+              <details>
+                <summary><i class="fas fa-question-circle" aria-hidden="true"></i> Who can join?</summary>
+                <p>All interested students are welcome.</p>
+              </details>
+              <details>
+                <summary><i class="fas fa-clock" aria-hidden="true"></i> When do we meet?</summary>
+                <p>Weekly during the semester; see the events calendar.</p>
+              </details>
+              <details>
+                <summary><i class="fas fa-hands-helping" aria-hidden="true"></i> How do I become a volunteer?</summary>
+                <p>Attend an onboarding session and talk to a coordinator.</p>
+              </details>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="resources" class="block" data-section="resources">
+        <div class="container">
+          <div class="block-header">
+            <h2>Resources</h2>
+            <p>Useful materials, media, and contacts.</p>
+          </div>
+          <div class="subnav" role="tablist" aria-label="Resources subsections">
+            <button class="subtab selected" data-target="documents" role="tab" aria-selected="true">Documents</button>
+            <button class="subtab" data-target="gallery" role="tab" aria-selected="false">Gallery</button>
+            <button class="subtab" data-target="sponsors" role="tab" aria-selected="false">Sponsors</button>
+            <button class="subtab" data-target="contact" role="tab" aria-selected="false">Contact</button>
+          </div>
+          <div class="subsections">
+            <article class="subsection active" data-subsection="documents" role="tabpanel">
+              <ul class="list">
+                <li><i class="fas fa-file-pdf" aria-hidden="true"></i> <a href="Club_Constitution.pdf" target="_blank" rel="noopener">Club Constitution (PDF)</a></li>
+                <li><i class="fas fa-file-pdf" aria-hidden="true"></i> <a href="#">Code of Conduct (PDF)</a></li>
+                <li><i class="fas fa-file-archive" aria-hidden="true"></i> <a href="#">Brand Assets (ZIP)</a></li>
+              </ul>
+            </article>
+            <article class="subsection" data-subsection="gallery" role="tabpanel">
+              <div class="grid gallery">
+                <!-- Images will be loaded dynamically by JavaScript -->
+              </div>
+            </article>
+            <article class="subsection" data-subsection="sponsors" role="tabpanel">
+              <div class="grid logos">
+                <div class="logo"><i class="fas fa-building" aria-hidden="true"></i> Alpha Corp</div>
+                <div class="logo"><i class="fas fa-building" aria-hidden="true"></i> Beta Ltd</div>
+                <div class="logo"><i class="fas fa-building" aria-hidden="true"></i> Gamma Inc</div>
+              </div>
+            </article>
+            <article class="subsection" data-subsection="contact" role="tabpanel">
+              <div class="grid two">
+                <div>
+                  <h4><i class="fas fa-envelope" aria-hidden="true"></i> Email</h4>
+                  <p><a href="mailto:hello@racclub.org">hello@racclub.org</a></p>
+                  <h4><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Location</h4>
+                  <p><a href="https://maps.app.goo.gl/8E1AXiyN6sGBj2nP8" target="_blank" rel="noopener">Symbiosis Skills and Professional University, Kiwale, Pune</a> <i class="fas fa-external-link-alt" aria-hidden="true"></i></p>
+                </div>
+                <div>
+                  <h4><i class="fas fa-share-alt" aria-hidden="true"></i> Follow</h4>
+                  <ul class="list">
+                    <li><a href="https://www.instagram.com/rac_sspu/" target="_blank" rel="noopener"><i class="fab fa-instagram" aria-hidden="true"></i> Instagram</a></li>
+                    <li><a href="https://linkedin.com/company/racsspu" target="_blank" rel="noopener"><i class="fab fa-linkedin" aria-hidden="true"></i> LinkedIn</a></li>
+                    <li><a href="https://youtube.com/@racsspu" target="_blank" rel="noopener"><i class="fab fa-youtube" aria-hidden="true"></i> YouTube</a></li>
+                  </ul>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- BOD Login Modal -->
+    <div id="login-modal" class="modal">
+      <div class="modal-content">
+        <button type="button" class="close" aria-label="Close modal">&times;</button>
+        <h2>BOD Login</h2>
+        <form novalidate>
+          <label for="bod-username"><i class="fas fa-user" aria-hidden="true"></i> Username</label>
+          <input type="text" id="bod-username" name="bod-username" required>
+          <label for="bod-password"><i class="fas fa-lock" aria-hidden="true"></i> Password</label>
+          <input type="password" id="bod-password" name="bod-password" required>
+          <button type="submit" class="btn primary"><i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login</button>
+        </form>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© <span id="year"></span> Rotaract Club of SSPU. All rights reserved.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/rac_sspu/" target="_blank" rel="noopener" aria-label="Follow us on Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+          <a href="https://linkedin.com/company/racsspu" target="_blank" rel="noopener" aria-label="Connect with us on LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
+          <a href="https://youtube.com/@racsspu" target="_blank" rel="noopener" aria-label="Subscribe to our YouTube channel"><i class="fab fa-youtube" aria-hidden="true"></i></a>
+        </div>
+        <a class="btn small" href="#top" aria-label="Back to top of page">Back to top ↑</a>
+      </div>
+    </footer>
+
+    <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
