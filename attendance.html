@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOD Attendance System - RAC SSPU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --bg-primary: #021826;
+            --bg-elev: #042635;
+            --text-primary: #DFF6FF;
+            --text-muted: #A9D7E8;
+            --primary: #00A8D4;
+            --primary-700: #007AA8;
+            --success: #2BE6A1;
+            --warning: #FFB86B;
+            --danger: #FF7A59;
+            --card-bg: #041927;
+            --border-color: #083044;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: var(--bg-elev);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-badge {
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Login Section */
+        .login-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-muted);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-elev);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 168, 212, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-700);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--bg-primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-elev);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Attendance Table */
+        .attendance-table {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            background: var(--bg-elev);
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(0, 168, 212, 0.05);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-present {
+            background: rgba(43, 230, 161, 0.2);
+            color: var(--success);
+        }
+
+        .status-absent {
+            background: rgba(255, 122, 89, 0.2);
+            color: var(--danger);
+        }
+
+        .status-late {
+            background: rgba(255, 184, 107, 0.2);
+            color: var(--warning);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table {
+                font-size: 0.875rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Live indicator */
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: rgba(43, 230, 161, 0.2);
+            color: var(--success);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            animation: pulse 2s infinite;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Connection status */
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .status-connected {
+            background: rgba(43, 230, 161, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-disconnected {
+            background: rgba(255, 122, 89, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .status-connecting {
+            background: rgba(255, 184, 107, 0.2);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status -->
+    <div id="connection-status" class="connection-status status-connecting">
+        <i class="fas fa-wifi"></i>
+        <span id="connection-text">Connecting...</span>
+    </div>
+
+    <!-- Login Section -->
+    <section id="login-section" class="login-section">
+        <div class="login-card fade-in">
+            <div class="login-header">
+                <img src="logo.png" alt="RAC SSPU Logo">
+                <h1>BOD Attendance System</h1>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">Board of Directors Portal</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <a href="index.html" class="logo">
+                        <img src="logo.png" alt="RAC SSPU Logo">
+                        <span>RAC SSPU</span>
+                    </a>
+                    <div class="user-info">
+                        <div class="user-badge">
+                            <i class="fas fa-user-shield"></i>
+                            <span id="user-name">BOD Member</span>
+                        </div>
+                        <button id="logout-btn" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Section Header -->
+                <div class="section-header">
+                    <h1 class="section-title">Attendance Dashboard</h1>
+                    <div>
+                        <div class="live-indicator">
+                            <div class="live-dot"></div>
+                            <span>LIVE</span>
+                        </div>
+                        <button id="mark-attendance-btn" class="btn btn-success">
+                            <i class="fas fa-check-circle"></i>
+                            Mark Attendance
+                        </button>
+                        <button id="export-btn" class="btn btn-secondary">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-meetings">0</div>
+                        <div class="stat-label">Total Meetings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="attendance-rate">0%</div>
+                        <div class="stat-label">Attendance Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="present-count">0</div>
+                        <div class="stat-label">Present Today</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-members">0</div>
+                        <div class="stat-label">Total BOD Members</div>
+                    </div>
+                </div>
+
+                <!-- Attendance Table -->
+                <div class="attendance-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Meeting Type</th>
+                                <th>Present</th>
+                                <th>Absent</th>
+                                <th>Late</th>
+                                <th>Attendance Rate</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-tbody">
+                            <!-- Attendance records will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mark Attendance Modal -->
+    <div id="attendance-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Mark Attendance</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="attendance-form">
+                <div class="form-group">
+                    <label class="form-label" for="meeting-date">Meeting Date</label>
+                    <input type="date" id="meeting-date" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="meeting-type">Meeting Type</label>
+                    <select id="meeting-type" class="form-input" required>
+                        <option value="">Select meeting type</option>
+                        <option value="regular">Regular Meeting</option>
+                        <option value="board">Board Meeting</option>
+                        <option value="special">Special Meeting</option>
+                        <option value="training">Training Session</option>
+                        <option value="event">Event Planning</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="meeting-notes">Notes (Optional)</label>
+                    <textarea id="meeting-notes" class="form-input" rows="3" placeholder="Add any notes about the meeting..."></textarea>
+                </div>
+                <div id="members-list" class="form-group">
+                    <label class="form-label">Mark Attendance for BOD Members</label>
+                    <div id="members-checkboxes">
+                        <!-- Member checkboxes will be populated here -->
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i>
+                        Save Attendance
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()" style="flex: 1;">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDemoKeyForTestingPurposesOnly",
+            authDomain: "rac-sspu-attendance.firebaseapp.com",
+            databaseURL: "https://rac-sspu-attendance-default-rtdb.firebaseio.com",
+            projectId: "rac-sspu-attendance",
+            storageBucket: "rac-sspu-attendance.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+
+        // BOD Members Data (in production, this would come from a database)
+        const bodMembers = [
+            { id: 1, name: 'Rtr. Anurag Dange', position: 'President' },
+            { id: 2, name: 'Rtr. Shruti Dargude', position: 'Secretary' },
+            { id: 3, name: 'Rtr. Mujjamil Hajju', position: 'Treasurer' },
+            { id: 4, name: 'Rtr. Disha Gorr', position: 'Joint Secretary & PDD' },
+            { id: 5, name: 'Rtr. Sai Krishna Ambekar', position: 'Professional Assistant Officer (PAO)' },
+            { id: 6, name: 'Rtr. Saee Dasare', position: 'Club Service Director' },
+            { id: 7, name: 'Rtr. Avishkar Lonkar', position: 'Club Service Director' },
+            { id: 8, name: 'Rtr. Vinayak Kalshetti', position: 'International Service Director & DEI Officer' },
+            { id: 9, name: 'Rtr. Vaishnavi Kedari', position: 'Community Service Director' },
+            { id: 10, name: 'Rtr. Ishita Shelar', position: 'Professional Development Director' },
+            { id: 11, name: 'Rtr. Sanjivani Patil', position: 'IPS, Club Advisor & WRWC' },
+            { id: 12, name: 'Rtr. Chaitanya Rohit', position: 'Finance Director' },
+            { id: 13, name: 'Rtr. Sairaj Phakatkar', position: 'Sergeant At Arms' }
+        ];
+
+        // Global variables
+        let attendanceData = [];
+        let currentUser = null;
+
+        // DOM Elements
+        const loginSection = document.getElementById('login-section');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('login-form');
+        const attendanceForm = document.getElementById('attendance-form');
+        const attendanceModal = document.getElementById('attendance-modal');
+        const markAttendanceBtn = document.getElementById('mark-attendance-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const exportBtn = document.getElementById('export-btn');
+        const connectionStatus = document.getElementById('connection-status');
+        const connectionText = document.getElementById('connection-text');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default
+            document.getElementById('meeting-date').valueAsDate = new Date();
+            
+            // Setup Firebase listeners
+            setupFirebaseListeners();
+            
+            // Load initial data
+            loadAttendanceData();
+            updateStatistics();
+            renderAttendanceTable();
+        });
+
+        // Firebase Connection Management
+        function setupFirebaseListeners() {
+            // Connection status
+            const connectedRef = database.ref('.info/connected');
+            connectedRef.on('value', (snap) => {
+                if (snap.val() === true) {
+                    updateConnectionStatus('connected', 'Connected');
+                } else {
+                    updateConnectionStatus('disconnected', 'Disconnected');
+                }
+            });
+
+            // Real-time attendance data listener
+            const attendanceRef = database.ref('attendance');
+            attendanceRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    attendanceData = Object.values(data);
+                    updateStatistics();
+                    renderAttendanceTable();
+                }
+            });
+
+            // Handle connection errors
+            database.ref('.info/serverTimeOffset').on('value', (snap) => {
+                if (snap.val() === null) {
+                    updateConnectionStatus('disconnected', 'Connection Error');
+                }
+            });
+        }
+
+        function updateConnectionStatus(status, text) {
+            connectionStatus.className = `connection-status status-${status}`;
+            connectionText.textContent = text;
+        }
+
+        // Login functionality with Firebase Auth
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username && password) {
+                // Show loading state
+                const submitBtn = loginForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<div class="spinner"></div> Signing in...';
+                submitBtn.disabled = true;
+                
+                // Simple authentication (in production, use Firebase Auth)
+                setTimeout(() => {
+                    currentUser = { username: username, uid: 'demo-user-' + Date.now() };
+                    document.getElementById('user-name').textContent = username;
+                    loginSection.classList.add('hidden');
+                    dashboard.classList.remove('hidden');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 1500);
+            }
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                currentUser = null;
+                dashboard.classList.add('hidden');
+                loginSection.classList.remove('hidden');
+                loginForm.reset();
+            }
+        });
+
+        // Mark attendance button
+        markAttendanceBtn.addEventListener('click', function() {
+            populateMembersCheckboxes();
+            attendanceModal.classList.add('active');
+        });
+
+        // Attendance form submission with Firebase
+        attendanceForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const date = document.getElementById('meeting-date').value;
+            const type = document.getElementById('meeting-type').value;
+            const notes = document.getElementById('meeting-notes').value;
+            
+            // Calculate attendance from checkboxes
+            const checkboxes = document.querySelectorAll('#members-checkboxes input[type="radio"]:checked');
+            let present = 0, absent = 0, late = 0;
+            
+            bodMembers.forEach(member => {
+                const radio = document.querySelector(`input[name="attendance_${member.id}"]:checked`);
+                if (radio) {
+                    if (radio.value === 'present') present++;
+                    else if (radio.value === 'late') late++;
+                    else absent++;
+                }
+            });
+            
+            // Create new attendance record
+            const newRecord = {
+                id: Date.now(),
+                date: date,
+                type: type,
+                present: present,
+                absent: absent,
+                late: late,
+                notes: notes,
+                markedBy: currentUser ? currentUser.username : 'Unknown',
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                members: getMemberAttendance()
+            };
+            
+            // Save to Firebase
+            saveToFirebase(newRecord);
+            
+            closeModal();
+            
+            // Show success message
+            showNotification('Attendance marked successfully!', 'success');
+        });
+
+        function getMemberAttendance() {
+            const memberAttendance = {};
+            bodMembers.forEach(member => {
+                const radio = document.querySelector(`input[name="attendance_${member.id}"]:checked`);
+                memberAttendance[member.id] = {
+                    name: member.name,
+                    position: member.position,
+                    status: radio ? radio.value : 'absent',
+                    markedAt: firebase.database.ServerValue.TIMESTAMP
+                };
+            });
+            return memberAttendance;
+        }
+
+        function saveToFirebase(record) {
+            const attendanceRef = database.ref('attendance/' + record.id);
+            attendanceRef.set(record)
+                .then(() => {
+                    console.log('Attendance saved successfully');
+                })
+                .catch((error) => {
+                    console.error('Error saving attendance:', error);
+                    showNotification('Error saving attendance', 'error');
+                });
+        }
+
+        // Export functionality
+        exportBtn.addEventListener('click', function() {
+            exportToCSV();
+        });
+
+        // Populate member checkboxes
+        function populateMembersCheckboxes() {
+            const container = document.getElementById('members-checkboxes');
+            container.innerHTML = '';
+            
+            bodMembers.forEach(member => {
+                const memberDiv = document.createElement('div');
+                memberDiv.style.cssText = 'margin-bottom: 1rem; padding: 1rem; background: var(--bg-elev); border-radius: 8px; border: 1px solid var(--border-color);';
+                
+                memberDiv.innerHTML = `
+                    <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary);">${member.name}</div>
+                    <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.75rem;">${member.position}</div>
+                    <div style="display: flex; gap: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="radio" name="attendance_${member.id}" value="present" checked>
+                            <span>Present</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="radio" name="attendance_${member.id}" value="late">
+                            <span>Late</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="radio" name="attendance_${member.id}" value="absent">
+                            <span>Absent</span>
+                        </label>
+                    </div>
+                `;
+                
+                container.appendChild(memberDiv);
+            });
+        }
+
+        // Update statistics with real-time data
+        function updateStatistics() {
+            const totalMeetings = attendanceData.length;
+            const totalMembers = bodMembers.length;
+            const latestMeeting = attendanceData[attendanceData.length - 1];
+            
+            let totalPresent = 0;
+            let totalPossible = 0;
+            
+            attendanceData.forEach(record => {
+                totalPresent += record.present || 0;
+                totalPossible += (record.present || 0) + (record.absent || 0) + (record.late || 0);
+            });
+            
+            const attendanceRate = totalPossible > 0 ? Math.round((totalPresent / totalPossible) * 100) : 0;
+            
+            document.getElementById('total-meetings').textContent = totalMeetings;
+            document.getElementById('attendance-rate').textContent = attendanceRate + '%';
+            document.getElementById('present-count').textContent = latestMeeting ? latestMeeting.present || 0 : 0;
+            document.getElementById('total-members').textContent = totalMembers;
+        }
+
+        // Render attendance table with real-time updates
+        function renderAttendanceTable() {
+            const tbody = document.getElementById('attendance-tbody');
+            tbody.innerHTML = '';
+            
+            // Sort by date (newest first)
+            const sortedData = [...attendanceData].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            sortedData.forEach(record => {
+                const row = document.createElement('tr');
+                const total = (record.present || 0) + (record.absent || 0) + (record.late || 0);
+                const attendanceRate = total > 0 ? Math.round((record.present || 0) / total * 100) : 0;
+                
+                row.innerHTML = `
+                    <td>${formatDate(record.date)}</td>
+                    <td>${formatMeetingType(record.type)}</td>
+                    <td><span class="status-badge status-present">${record.present || 0}</span></td>
+                    <td><span class="status-badge status-absent">${record.absent || 0}</span></td>
+                    <td><span class="status-badge status-late">${record.late || 0}</span></td>
+                    <td>${attendanceRate}%</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.875rem;" onclick="viewDetails(${record.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        function formatMeetingType(type) {
+            const types = {
+                'regular': 'Regular Meeting',
+                'board': 'Board Meeting',
+                'special': 'Special Meeting',
+                'training': 'Training Session',
+                'event': 'Event Planning'
+            };
+            return types[type] || type;
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 10000;
+                animation: slideDown 0.3s ease-out;
+            `;
+            
+            if (type === 'success') {
+                notification.style.background = 'rgba(43, 230, 161, 0.9)';
+                notification.style.color = 'var(--bg-primary)';
+            } else {
+                notification.style.background = 'rgba(255, 122, 89, 0.9)';
+                notification.style.color = 'white';
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function closeModal() {
+            attendanceModal.classList.remove('active');
+            attendanceForm.reset();
+            document.getElementById('meeting-date').valueAsDate = new Date();
+        }
+
+        function viewDetails(recordId) {
+            const record = attendanceData.find(r => r.id === recordId);
+            if (record) {
+                const details = `
+Meeting Details:
+
+Date: ${formatDate(record.date)}
+Type: ${formatMeetingType(record.type)}
+Present: ${record.present || 0}
+Absent: ${record.absent || 0}
+Late: ${record.late || 0}
+Marked by: ${record.markedBy || 'Unknown'}
+Notes: ${record.notes || 'No notes'}
+                `;
+                alert(details.trim());
+            }
+        }
+
+        function exportToCSV() {
+            let csv = 'Date,Meeting Type,Present,Absent,Late,Attendance Rate,Marked By,Notes\n';
+            
+            attendanceData.forEach(record => {
+                const total = (record.present || 0) + (record.absent || 0) + (record.late || 0);
+                const attendanceRate = total > 0 ? Math.round((record.present || 0) / total * 100) : 0;
+                csv += `${record.date},${formatMeetingType(record.type)},${record.present || 0},${record.absent || 0},${record.late || 0},${attendanceRate}%,"${record.markedBy || 'Unknown'}","${record.notes || ''}"\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bod-attendance-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Load initial data from Firebase
+        function loadAttendanceData() {
+            const attendanceRef = database.ref('attendance');
+            attendanceRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    attendanceData = Object.values(data);
+                    updateStatistics();
+                    renderAttendanceTable();
+                }
+            });
+        }
+
+        // Close modal when clicking outside
+        attendanceModal.addEventListener('click', function(e) {
+            if (e.target === attendanceModal) {
+                closeModal();
+            }
+        });
+
+        // Add slide down animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from {
+                    transform: translate(-50%, -100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translate(-50%, 0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

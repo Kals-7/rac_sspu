@@ -1,25 +1,25 @@
 // Ripple Effect for Buttons
 function addRippleEffect() {
   const buttons = document.querySelectorAll('.btn');
-  
+
   buttons.forEach(button => {
-    button.addEventListener('click', function(e) {
+    button.addEventListener('click', function (e) {
       // Create ripple element
       const ripple = document.createElement('span');
       ripple.classList.add('btn-ripple');
-      
+
       // Get position of click
       const rect = button.getBoundingClientRect();
       const size = Math.max(rect.width, rect.height);
-      
+
       // Set ripple size and position
       ripple.style.width = ripple.style.height = `${size}px`;
-      ripple.style.left = `${e.clientX - rect.left - size/2}px`;
-      ripple.style.top = `${e.clientY - rect.top - size/2}px`;
-      
+      ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+      ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+
       // Add ripple to button
       button.appendChild(ripple);
-      
+
       // Remove ripple after animation
       setTimeout(() => {
         ripple.remove();
@@ -30,36 +30,43 @@ function addRippleEffect() {
 
 // Tab functionality
 function initTabs() {
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const tabContents = document.querySelectorAll('.tab-content');
+  const tabBtns = document.querySelectorAll('.tab-btn, .subtab');
 
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      // Remove active class from all buttons and contents
-      tabBtns.forEach(b => b.classList.remove('active'));
-      tabContents.forEach(c => c.classList.remove('active'));
+      const container = btn.closest('.block, section');
+      const targetId = btn.getAttribute('data-tab') || btn.getAttribute('data-target');
+      const targetContent = container.querySelector(`[id="${targetId}"], [data-subsection="${targetId}"]`);
 
-      // Add active class to clicked button
-      btn.classList.add('active');
+      if (!targetContent) return;
 
-      // Show corresponding content
-      const tabId = btn.getAttribute('data-tab');
-      const tabContent = document.getElementById(tabId);
-      if (tabContent) {
-        tabContent.classList.add('active');
-      }
+      // Remove active classes
+      const parentNav = btn.closest('.tabs, .subnav');
+      parentNav.querySelectorAll('.tab-btn, .subtab').forEach(b => {
+        b.classList.remove('active', 'selected');
+        b.setAttribute('aria-selected', 'false');
+      });
+
+      const contentsContainer = container.querySelector('.subsections, .tab-contents') || container;
+      contentsContainer.querySelectorAll('.tab-content, .subsection').forEach(c => {
+        c.classList.remove('active');
+        c.style.opacity = '0';
+        c.style.transform = 'translateY(10px)';
+      });
+
+      // Add active classes
+      btn.classList.add(btn.classList.contains('subtab') ? 'selected' : 'active');
+      btn.setAttribute('aria-selected', 'true');
+
+      targetContent.classList.add('active');
+
+      // Trigger animation
+      setTimeout(() => {
+        targetContent.style.opacity = '1';
+        targetContent.style.transform = 'translateY(0)';
+      }, 50);
     });
   });
-
-  // Activate first tab by default if none is active
-  if (document.querySelectorAll('.tab-btn.active').length === 0 && tabBtns.length > 0) {
-    tabBtns[0].classList.add('active');
-    const firstTabId = tabBtns[0].getAttribute('data-tab');
-    const firstTabContent = document.getElementById(firstTabId);
-    if (firstTabContent) {
-      firstTabContent.classList.add('active');
-    }
-  }
 }
 
 // Initialize flip card interactions
@@ -100,13 +107,9 @@ function initFlipCards() {
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize ripple effect
   addRippleEffect();
-  
-  // Initialize tabs
   initTabs();
+  initFlipCards();
 
-  // Initialize flip cards
-  if (typeof initFlipCards === 'function') initFlipCards();
-  
   // Footer year
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -139,6 +142,81 @@ document.addEventListener('DOMContentLoaded', () => {
       window.scrollTo({ top, behavior: 'smooth' });
     });
   });
+
+  // Back to top button
+  const backToTop = document.getElementById('back-to-top');
+  if (backToTop) {
+    const header = document.querySelector('.site-header');
+    window.addEventListener('scroll', () => {
+      // Back to top visibility
+      if (window.scrollY > 300) {
+        backToTop.classList.add('visible');
+      } else {
+        backToTop.classList.remove('visible');
+      }
+
+      // Header scroll effect
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+  // Scroll Reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-list a');
+
+  const revealOnScroll = () => {
+    const scrollPos = window.scrollY + 100;
+
+    reveals.forEach(reveal => {
+      const windowHeight = window.innerHeight;
+      const revealTop = reveal.getBoundingClientRect().top;
+      const revealPoint = 150;
+
+      if (revealTop < windowHeight - revealPoint) {
+        reveal.classList.add('active');
+      }
+    });
+
+    // Nav active state
+    sections.forEach(section => {
+      if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.offsetHeight) {
+        const id = section.getAttribute('id');
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${id}`) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+
+    // Parallax hero
+    const heroLogo = document.querySelector('.hero-logo');
+    if (heroLogo) {
+      heroLogo.style.transform = `translateY(${window.scrollY * 0.1}px) rotate(${window.scrollY * 0.05}deg)`;
+    }
+  };
+
+  window.addEventListener('scroll', revealOnScroll);
+  revealOnScroll(); // Run once on load
+
+  // Footer year (re-added here as per instruction, though it was already present above)
+  const footerYearEl = document.getElementById('year');
+  if (footerYearEl) {
+    footerYearEl.textContent = new Date().getFullYear();
+  }
 
   /* BOD login entry gate removed */
 
@@ -240,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const data = await res.json();
-        
+
         // Store member session
         sessionStorage.setItem('memberToken', data.token);
         sessionStorage.setItem('memberAuthenticated', 'true');
@@ -282,7 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const data = await res.json();
-        
+
         // Store member session
         sessionStorage.setItem('memberToken', data.token);
         sessionStorage.setItem('memberAuthenticated', 'true');
@@ -321,18 +399,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Update logout function to handle both BOD and member logout
   const originalBodLogout = window.bodLogout;
-  window.bodLogout = function() {
+  window.bodLogout = function () {
     // Clear member session too
     sessionStorage.removeItem('memberAuthenticated');
     sessionStorage.removeItem('memberToken');
     sessionStorage.removeItem('memberData');
-    
+
     // Hide member display
     const memberDisplay = document.getElementById('member-display');
     const memberLoginBtn = document.getElementById('member-login-btn');
     if (memberDisplay) memberDisplay.style.display = 'none';
     if (memberLoginBtn) memberLoginBtn.style.display = '';
-    
+
     // Call original BOD logout
     if (originalBodLogout) originalBodLogout();
   };
@@ -355,16 +433,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Test function for member registration
-  window.testMemberRegistration = async function() {
+  window.testMemberRegistration = async function () {
     try {
       const res = await fetch(`${API_BASE}/api/members/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          name: 'Test User', 
-          email: 'test@example.com', 
-          password: 'password123', 
-          interest: 'Community' 
+        body: JSON.stringify({
+          name: 'Test User',
+          email: 'test@example.com',
+          password: 'password123',
+          interest: 'Community'
         })
       });
       const data = await res.json();
@@ -389,24 +467,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Logout helper
   window.bodLogout = function () {
     console.log('bodLogout function called');
-    
+
     // Clear all session storage
     sessionStorage.removeItem('bodAuthenticated');
     sessionStorage.removeItem('authToken');
     sessionStorage.removeItem('bodUsername');
-    
+
     console.log('Session storage cleared');
-    
+
     // Hide logout button and username display
     const logoutBtn = document.getElementById('logout-btn');
     const usernameDisplay = document.getElementById('username-display');
     if (logoutBtn) logoutBtn.style.display = 'none';
     if (usernameDisplay) usernameDisplay.style.display = 'none';
-    
+
     // Show BOD login button again
     const bodLoginBtn = document.getElementById('bod-login-btn');
     if (bodLoginBtn) bodLoginBtn.style.display = '';
-    
+
     console.log('UI elements updated');
     showToast('Logged out successfully');
     showModalRequired();
@@ -417,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const usernameDisplayInit = document.getElementById('username-display');
   const loggedUsernameInit = document.getElementById('logged-username');
   const bodLoginBtnInit = document.getElementById('bod-login-btn');
-  
+
   if (sessionStorage.getItem('bodAuthenticated') === 'true') {
     // User is logged in
     if (logoutBtnInit) logoutBtnInit.style.display = '';
@@ -438,23 +516,23 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.block').forEach((block) => {
     const tabs = block.querySelectorAll('.subtab');
     const panels = block.querySelectorAll('.subsection');
-    
+
     // Auto-select first tab in each section
     if (tabs.length > 0) {
       // Remove active class from all tabs and panels first
       tabs.forEach(t => t.classList.remove('selected'));
       panels.forEach(p => p.classList.remove('active'));
-      
+
       // Activate first tab and its corresponding panel
       const firstTab = tabs[0];
       const firstPanel = block.querySelector(`.subsection[data-subsection="${firstTab.getAttribute('data-target')}"]`);
-      
+
       if (firstTab && firstPanel) {
         firstTab.classList.add('selected');
         firstPanel.classList.add('active');
       }
     }
-    
+
     // Add click handlers for tab switching
     tabs.forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -475,12 +553,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const galleryGrid = document.querySelector('.grid.gallery');
   if (galleryGrid) {
     console.log('Gallery grid found, fetching images...');
-    
+
     // Show loading state
     galleryGrid.innerHTML = '<div style="text-align: center; color: var(--muted); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Loading gallery...</div>';
-    
+
     console.log('API Base:', API_BASE);
-    
+
     fetch(`${API_BASE}/api/gallery`)
       .then(r => {
         console.log('Gallery response status:', r.status);
@@ -493,14 +571,14 @@ document.addEventListener('DOMContentLoaded', () => {
           galleryGrid.innerHTML = '<div style="text-align: center; color: var(--muted); padding: 40px;"><i class="fas fa-images"></i> No images found in gallery</div>';
           return;
         }
-        
+
         galleryGrid.innerHTML = '';
         items.forEach(({ src, alt, type }, index) => {
           console.log(`Processing item ${index}:`, { src, alt, type });
-          
+
           const fig = document.createElement('figure');
           fig.className = 'photo';
-          
+
           if (type === 'heic') {
             // HEIC files - show as image with fallback
             const img = document.createElement('img');
@@ -508,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
             img.alt = alt || 'Gallery photo';
             img.style.cursor = 'pointer';
             img.onload = () => console.log(`HEIC image loaded: ${src}`);
-            img.onerror = function() {
+            img.onerror = function () {
               console.log(`HEIC failed to load, showing placeholder: ${src}`);
               this.style.display = 'none';
               fig.innerHTML = `
@@ -537,7 +615,7 @@ document.addEventListener('DOMContentLoaded', () => {
             img.onclick = () => openLightbox(src, alt);
             fig.appendChild(img);
           }
-          
+
           // Add overlay with actions for all images
           const overlay = document.createElement('div');
           overlay.className = 'photo-overlay';
@@ -552,11 +630,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `;
           fig.appendChild(overlay);
-          
+
           galleryGrid.appendChild(fig);
           console.log(`Added figure ${index} to gallery`);
         });
-        
+
         console.log(`Gallery populated with ${items.length} items`);
       })
       .catch((err) => {
@@ -568,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Lightbox functionality
-  window.openLightbox = function(src, alt) {
+  window.openLightbox = function (src, alt) {
     const lightbox = document.createElement('div');
     lightbox.className = 'lightbox';
     lightbox.innerHTML = `
@@ -578,16 +656,16 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="lightbox-caption">${alt}</div>
       </div>
     `;
-    
+
     lightbox.onclick = (e) => {
       if (e.target === lightbox) lightbox.remove();
     };
-    
+
     lightbox.querySelector('.lightbox-close').onclick = () => lightbox.remove();
-    
+
     document.body.appendChild(lightbox);
     document.body.style.overflow = 'hidden';
-    
+
     // Close on escape key
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
@@ -597,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
     document.addEventListener('keydown', handleEscape);
-    
+
     // Restore scroll when lightbox closes
     lightbox.addEventListener('remove', () => {
       document.body.style.overflow = '';
@@ -605,7 +683,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // Download functionality
-  window.downloadImage = function(src, filename) {
+  window.downloadImage = function (src, filename) {
     const link = document.createElement('a');
     link.href = src;
     link.download = filename || 'image';

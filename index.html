@@ -12,165 +12,280 @@
     <meta name="theme-color" content="#b31217" />
     <link rel="icon" href="logo.png" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'bg-primary': '#021826',
+              'bg-elev': '#042635',
+              'text-primary': '#DFF6FF',
+              'text-muted': '#A9D7E8',
+              'primary': '#00A8D4',
+              'primary-700': '#007AA8',
+              'hero-accent': '#00A8D4',
+              'lead-accent': '#FF7A59',
+              'membership-accent': '#2BE6A1',
+              'events-accent': '#FFB86B',
+              'footer-accent': '#032B54',
+              'card-bg': '#041927',
+              'border-color': '#083044',
+            },
+            fontFamily: {
+              'inter': ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+              'poppins': ['Poppins', 'Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+            },
+            backgroundImage: {
+              'ocean-gradient': 'radial-gradient(1200px 600px at 10% -10%, #1b2045 0%, transparent 50%), radial-gradient(800px 400px at 110% -20%, #1b2c4d 0%, transparent 60%), #021826',
+            },
+          }
+        }
+      }
+    </script>
+    <script src="js/mobile-menu.js"></script>
+    <script>
+      // Theme Toggle Functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme or default to dark
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+        
+        // Theme toggle click handler
+        themeToggle.addEventListener('click', () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          
+          // Update theme
+          document.documentElement.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+          updateThemeIcon(newTheme);
+          
+          // Add transition effect
+          document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+          setTimeout(() => {
+            document.body.style.transition = '';
+          }, 300);
+        });
+        
+        function updateThemeIcon(theme) {
+          if (theme === 'light') {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+          } else {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+          }
+        }
+      });
+    </script>
   </head>
   <body>
-    <header class="site-header">
-      <div class="container header-inner">
-        <img src="logo.png" alt="RAC Symbiosis Skills and Professional University Logo" class="logo-img" width="80" height="80" />
-        <a href="#top" class="brand" aria-label="Rotaract Club of SSPU home" style="margin-left:1rem;">Rotaract Club of SSPU</a>
-        <nav class="main-nav" aria-label="Primary">
-          <button class="nav-toggle" aria-label="Open menu" aria-expanded="false"><i class="fas fa-bars" aria-hidden="true"></i></button>
-          <ul class="nav-list">
-            <li><a href="#about"><i class="fas fa-info-circle" aria-hidden="true"></i> About</a></li>
-            <li><a href="#events"><i class="fas fa-calendar-alt" aria-hidden="true"></i> Events</a></li>
-            <li><a href="#membership"><i class="fas fa-users" aria-hidden="true"></i> Membership</a></li>
-            <li><a href="#resources"><i class="fas fa-book" aria-hidden="true"></i> Resources</a></li>
-            <li>
-              <button id="member-login-btn" class="btn" type="button" aria-label="Member Login">
-                <i class="fas fa-user" aria-hidden="true"></i> Member Login
-              </button>
-            </li>
-            <li>
-              <span id="member-display" style="display:none; color: var(--primary); font-weight: 600; padding: 8px 12px;">
-                <i class="fas fa-user" aria-hidden="true"></i> <span id="logged-member"></span>
-              </span>
-            </li>
-            <li>
-              <span id="username-display" style="display:none; color: var(--accent); font-weight: 600; padding: 8px 12px;">
-                <i class="fas fa-user-shield" aria-hidden="true"></i> <span id="logged-username"></span>
-              </span>
-            </li>
-            <li>
-              <button id="logout-btn" class="btn" type="button" style="display:none" aria-label="Logout">
-                <i class="fas fa-right-from-bracket" aria-hidden="true"></i> Logout
-              </button>
-            </li>
-          </ul>
-        </nav>
+    <header class="site-header sticky top-0 z-50 backdrop-blur-lg bg-bg-primary/90 border-b border-white/10 transition-all duration-300">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between py-3.5">
+          <div class="flex items-center">
+            <img src="logo.png" alt="RAC Symbiosis Skills and Professional University Logo" class="w-16 h-16 sm:w-20 sm:h-20" />
+            <a href="#top" class="brand ml-4 text-primary font-extrabold tracking-wide text-lg sm:text-xl lg:text-2xl" aria-label="Rotaract Club of SSPU home">Rotaract Club of SSPU</a>
+          </div>
+          <nav class="main-nav" aria-label="Primary">
+            <button class="nav-toggle sm:hidden p-2 text-text-primary hover:text-primary transition-colors" aria-label="Open menu" aria-expanded="false">
+              <i class="fas fa-bars text-xl" aria-hidden="true"></i>
+            </button>
+            <ul class="nav-list hidden sm:flex items-center space-x-1 lg:space-x-2">
+              <li><a href="#about" class="flex items-center px-3 py-2 text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-white/5"><i class="fas fa-info-circle mr-2" aria-hidden="true"></i> <span class="hidden sm:inline">About</span></a></li>
+              <li><a href="#events" class="flex items-center px-3 py-2 text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-white/5"><i class="fas fa-calendar-alt mr-2" aria-hidden="true"></i> <span class="hidden sm:inline">Events</span></a></li>
+              <li><a href="#membership" class="flex items-center px-3 py-2 text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-white/5"><i class="fas fa-users mr-2" aria-hidden="true"></i> <span class="hidden sm:inline">Membership</span></a></li>
+              <li><a href="#resources" class="flex items-center px-3 py-2 text-text-primary hover:text-primary transition-colors rounded-lg hover:bg-white/5"><i class="fas fa-book mr-2" aria-hidden="true"></i> <span class="hidden sm:inline">Resources</span></a></li>
+              <li>
+                <button id="member-login-btn" class="btn bg-primary hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium" type="button" aria-label="Member Login">
+                  <i class="fas fa-user mr-2" aria-hidden="true"></i> <span class="hidden sm:inline">Member Login</span>
+                </button>
+              </li>
+              <li>
+                <span id="member-display" class="hidden text-primary font-semibold px-3 py-2 text-sm sm:text-base">
+                  <i class="fas fa-user mr-2" aria-hidden="true"></i> <span id="logged-member"></span>
+                </span>
+              </li>
+              <li>
+                <span id="username-display" class="hidden text-membership-accent font-semibold px-3 py-2 text-sm sm:text-base">
+                  <i class="fas fa-user-shield mr-2" aria-hidden="true"></i> <span id="logged-username"></span>
+                </span>
+              </li>
+              <li>
+                <button id="logout-btn" class="btn hidden bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors text-sm font-medium" type="button" aria-label="Logout">
+                  <i class="fas fa-right-from-bracket mr-2" aria-hidden="true"></i> <span class="hidden sm:inline">Logout</span>
+                </button>
+              </li>
+              <li>
+                <button id="theme-toggle" class="bg-transparent border-2 border-border-color text-text-primary hover:bg-bg-elev px-3 py-2 rounded-lg transition-all duration-300" type="button" aria-label="Toggle theme">
+                  <i class="fas fa-moon" aria-hidden="true"></i>
+                </button>
+              </li>
+            </ul>
+            <!-- Mobile Menu -->
+            <div class="mobile-menu fixed inset-0 bg-bg-primary/95 backdrop-blur-lg sm:hidden z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
+              <div class="flex flex-col h-full">
+                <div class="flex items-center justify-between p-4 border-b border-border-color">
+                  <span class="text-text-primary font-bold text-lg">Menu</span>
+                  <button class="mobile-menu-close p-2 text-text-primary hover:text-primary transition-colors" aria-label="Close menu">
+                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <ul class="flex-1 overflow-y-auto py-4">
+                  <li><a href="#about" class="flex items-center px-4 py-3 text-text-primary hover:text-primary hover:bg-white/5 transition-colors"><i class="fas fa-info-circle mr-3" aria-hidden="true"></i> About</a></li>
+                  <li><a href="#events" class="flex items-center px-4 py-3 text-text-primary hover:text-primary hover:bg-white/5 transition-colors"><i class="fas fa-calendar-alt mr-3" aria-hidden="true"></i> Events</a></li>
+                  <li><a href="#membership" class="flex items-center px-4 py-3 text-text-primary hover:text-primary hover:bg-white/5 transition-colors"><i class="fas fa-users mr-3" aria-hidden="true"></i> Membership</a></li>
+                  <li><a href="#resources" class="flex items-center px-4 py-3 text-text-primary hover:text-primary hover:bg-white/5 transition-colors"><i class="fas fa-book mr-3" aria-hidden="true"></i> Resources</a></li>
+                  <li class="border-t border-border-color mt-4 pt-4">
+                    <button id="mobile-member-login-btn" class="w-full flex items-center justify-center bg-primary hover:bg-primary-700 text-white px-4 py-3 rounded-lg transition-colors font-medium" type="button">
+                      <i class="fas fa-user mr-2" aria-hidden="true"></i> Member Login
+                    </button>
+                  </li>
+                  <li id="mobile-logout-section" class="hidden border-t border-border-color mt-4 pt-4 space-y-3">
+                    <div class="px-4 text-primary font-semibold">
+                      <i class="fas fa-user mr-2" aria-hidden="true"></i> <span id="mobile-logged-member"></span>
+                    </div>
+                    <div class="px-4 text-membership-accent font-semibold">
+                      <i class="fas fa-user-shield mr-2" aria-hidden="true"></i> <span id="mobile-logged-username"></span>
+                    </div>
+                    <button id="mobile-logout-btn" class="w-full flex items-center justify-center bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition-colors font-medium" type="button">
+                      <i class="fas fa-right-from-bracket mr-2" aria-hidden="true"></i> Logout
+                    </button>
+                    <button id="mobile-theme-toggle" class="w-full flex items-center justify-center bg-transparent border-2 border-border-color text-text-primary hover:bg-bg-elev px-4 py-3 rounded-lg transition-all duration-300" type="button" aria-label="Toggle theme">
+                      <i class="fas fa-moon mr-2" aria-hidden="true"></i> Toggle Theme
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </div>
       </div>
     </header>
 
     <main id="top">
-      <section class="hero">
-        <div class="container hero-inner">
-          <img src="logo.png" alt="Rotaract Club of SSPU Logo" class="hero-logo" width="220" height="220" />
-          <h1>Welcome to Rotaract Club of Symbiosis Skills & Professional University (SSPU)</h1>
-          <p>Connecting members through activities, growth and community impact.</p>
-          <div class="hero-actions">
-            <a class="btn primary" href="#membership"><i class="fas fa-user-plus" aria-hidden="true"></i> Join Now</a>
-            <a class="btn" href="#events"><i class="fas fa-calendar" aria-hidden="true"></i> See Events</a>
+      <section class="hero min-h-screen flex items-center justify-center bg-ocean-gradient relative overflow-hidden">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div class="max-w-4xl mx-auto">
+            <img src="logo.png" alt="Rotaract Club of SSPU Logo" class="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 mx-auto mb-6 sm:mb-8 lg:mb-10" />
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-poppins font-bold text-text-primary mb-4 sm:mb-6 leading-tight">Welcome to Rotaract Club of Symbiosis Skills & Professional University (SSPU)</h1>
+            <p class="text-lg sm:text-xl md:text-2xl text-text-muted mb-8 sm:mb-10 max-w-2xl mx-auto">Connecting members through activities, growth and community impact.</p>
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center mb-12 sm:mb-16">
+              <a class="bg-primary hover:bg-primary-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center text-sm sm:text-base" href="#membership">
+                <i class="fas fa-user-plus mr-2" aria-hidden="true"></i> Join Now
+              </a>
+              <a class="bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center text-sm sm:text-base" href="#events">
+                <i class="fas fa-calendar mr-2" aria-hidden="true"></i> See Events
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="about" class="block" data-section="about">
-        <div class="container">
-          <div class="block-header">
-            <h2>About</h2>
-            <p>Learn what we stand for and who we are.</p>
+
+
+      <section id="about" class="py-16 sm:py-20 lg:py-24 reveal" data-section="about">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12 sm:mb-16">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-poppins font-bold text-text-primary mb-4">About</h2>
+            <p class="text-lg sm:text-xl text-text-muted max-w-2xl mx-auto">Learn what we stand for and who we are.</p>
           </div>
-          <div class="subnav" role="tablist" aria-label="About subsections">
-            <button class="subtab selected" data-target="founders" role="tab" aria-selected="true">Founder's Vision</button>
-            <button class="subtab" data-target="history" role="tab" aria-selected="false">History</button>
-            <button class="subtab" data-target="leadership" role="tab" aria-selected="false">Leadership</button>
+          <div class="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8 sm:mb-12" role="tablist" aria-label="About subsections">
+            <button class="subtab px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-300 bg-primary text-white" data-target="founders" role="tab" aria-selected="true">Founder's Vision</button>
+            <button class="subtab px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-300 bg-card-bg border border-border-color text-text-muted hover:bg-bg-elev" data-target="history" role="tab" aria-selected="false">History</button>
+            <button class="subtab px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-all duration-300 bg-card-bg border border-border-color text-text-muted hover:bg-bg-elev" data-target="leadership" role="tab" aria-selected="false">Leadership</button>
           </div>
           <div class="subsections">
-            <!-- Mission & Vision subsections removed. Founder's Vision is primary. -->
-            <article class="subsection" data-subsection="history" role="tabpanel">
-              <h3>Our History</h3>
-              <p>Founded in 2024, we began with a small team passionate about impact. Today we host activities across campus and beyond.</p>
+            <article class="subsection hidden" data-subsection="history" role="tabpanel">
+              <h3 class="text-2xl sm:text-3xl font-poppins font-bold text-text-primary mb-4">Our History</h3>
+              <p class="text-text-muted text-lg leading-relaxed">Founded in 2024, we began with a small team passionate about impact. Today we host activities across campus and beyond.</p>
             </article>
 
-            <article class="subsection active" data-subsection="founders" role="tabpanel">
-              <h3>Founder's Vision</h3>
-
-              <div class="founder-card card">
-                <div class="founder-grid">
+            <article class="subsection" data-subsection="founders" role="tabpanel">
+              <h3 class="text-2xl sm:text-3xl font-poppins font-bold text-text-primary mb-6 sm:mb-8">Founder's Vision</h3>
+              <div class="founder-card bg-card-bg border border-border-color rounded-xl p-6 sm:p-8 lg:p-10">
+                <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 items-start">
                   <div class="founder-photo">
-                    <img src="assets/leadership/charter president.jpeg" alt="Founder photo" class="founder-img" loading="lazy">
+                    <img src="assets/leadership/charter president.jpeg" alt="Founder photo" class="w-full max-w-sm mx-auto lg:max-w-none rounded-lg shadow-lg" loading="lazy">
                   </div>
-
                   <div class="founder-content">
-                    <h4 class="founder-name">Rtr. Subhashini Darekar <span class="founder-role">— Charter President</span></h4>
-
-                    <p class="founder-tagline"><strong>Our founding vision:</strong> to create leaders through service, community engagement and personal growth.</p>
-
-                    <blockquote class="founder-quote">"Join us — together we can make a difference."</blockquote>
-
-                    <p class="founder-body">[Long-form narrative goes here — replace this placeholder with the charter president's journey, milestones and a short message for future members. Example: "In 2024, Rtr. Subhashini Darekar founded the Rotaract Club of SSPU with a simple idea — empower students to become community leaders. Our first outreach reached 200+ students and laid the foundation for ongoing service projects."]</p>
-
-                    <ul class="founder-stats">
+                    <h4 class="founder-name text-xl sm:text-2xl font-poppins font-bold text-text-primary mb-2">Rtr. Subhashini Darekar <span class="text-text-muted font-normal">— Charter President</span></h4>
+                    <p class="founder-tagline text-text-muted text-lg mb-4"><strong>Our founding vision:</strong> to create leaders through service, community engagement and personal growth.</p>
+                    <blockquote class="founder-quote border-l-4 border-primary pl-4 italic text-text-muted text-lg mb-6">"Join us — together we can make a difference."</blockquote>
+                    <p class="founder-body text-text-muted leading-relaxed mb-6">[Long-form narrative goes here — replace this placeholder with the charter president's journey, milestones and a short message for future members. Example: "In 2024, Rtr. Subhashini Darekar founded the Rotaract Club of SSPU with a simple idea — empower students to become community leaders. Our first outreach reached 200+ students and laid the foundation for ongoing service projects."]</p>
+                    <ul class="founder-stats space-y-2 text-text-muted">
                       <li><strong>Founded:</strong> 2024</li>
                       <li><strong>Initial Initiative:</strong> Campus outreach & first service drive</li>
                       <li><strong>Message:</strong> "Join us — together we can make a difference."</li>
-                      <li><strong>Contact:</strong> <a href="mailto:rotaractsspu@gmail.com">rotaractsspu@gmail.com</a></li>
+                      <li><strong>Contact:</strong> <a href="mailto:rotaractsspu@gmail.com" class="text-primary hover:text-primary-700 transition-colors">rotaractsspu@gmail.com</a></li>
                     </ul>
-
-                    <p class="founder-sign">— Rtr. Subhashini Darekar</p>
-
-
+                    <p class="founder-sign text-text-muted italic mt-6">— Rtr. Subhashini Darekar</p>
                   </div>
                 </div>
               </div>
-
             </article> 
 
-            <article class="subsection" data-subsection="leadership" role="tabpanel">
-              <h3>Leadership</h3>
-              <div class="grid cards">
-                <div class="card"><h4>President</h4><p>Leads strategy and operations.</p></div>
-                <div class="card"><h4>Secretary</h4><p>Coordinates communication.</p></div>
-                <div class="card"><h4>Treasurer</h4><p>Manages budget and finance.</p></div>
-                <div class="card"><h4>Joint Secretary</h4><p>Coordinates communication.</p></div>
-                <div class="card"><h4><i class="fas fa-hand-holding-heart"></i> Community Service Director</h4><p>Leads community outreach and service projects.</p></div>
-                <div class="card"><h4><i class="fas fa-users"></i> Club Service Director</h4><p>Strengthens Club engagement and member experience.</p></div>
-                <div class="card"><h4><i class="fas fa-globe"></i> International Service Director</h4><p>Drives global collaboration and cultural exchange.</p></div>
-                <div class="card"><h4><i class="fas fa-user-graduate"></i> Professional Development Director</h4><p>Builds skills through training and mentorship.</p></div>
-                <div class="card"><h4><i class="fas fa-handshake"></i> Rotary–Rotaract Relationship Officer</h4><p>Fosters partnership with Rotary and external networks.</p></div>
+            <article class="subsection hidden" data-subsection="leadership" role="tabpanel">
+              <h3 class="text-2xl sm:text-3xl font-poppins font-bold text-text-primary mb-6 sm:mb-8">Leadership</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div class="bg-card-bg border border-border-color rounded-lg p-6 hover:bg-bg-elev transition-colors"><h4 class="text-lg font-poppins font-semibold text-text-primary mb-2">President</h4><p class="text-text-muted">Leads strategy and operations.</p></div>
+                <div class="bg-card-bg border border-border-color rounded-lg p-6 hover:bg-bg-elev transition-colors"><h4 class="text-lg font-poppins font-semibold text-text-primary mb-2">Secretary</h4><p class="text-text-muted">Coordinates communication.</p></div>
+                <div class="bg-card-bg border border-border-color rounded-lg p-6 hover:bg-bg-elev transition-colors"><h4 class="text-lg font-poppins font-semibold text-text-primary mb-2">Treasurer</h4><p class="text-text-muted">Manages budget and finance.</p></div>
+                <div class="bg-card-bg border border-border-color rounded-lg p-6 hover:bg-bg-elev transition-colors"><h4 class="text-lg font-poppins font-semibold text-text-primary mb-2">Joint Secretary</h4><p class="text-text-muted">Coordinates communication.</p></div>
+                <div class="bg-card-bg border border-border-color rounded-lg p-6 hover:bg-bg-elev transition-colors"><h4 class="text-lg font-poppins font-semibold text-text-primary mb-2"><i class="fas fa-hand-holding-heart mr-2 text-lead-accent"></i> Community Service Director</h4><p class="text-text-muted">Leads community outreach and service projects.</p></div>
+                <div class="bg-card-bg border border-border-color rounded-lg p-6 hover:bg-bg-elev transition-colors"><h4 class="text-lg font-poppins font-semibold text-text-primary mb-2"><i class="fas fa-users mr-2 text-lead-accent"></i> Club Service Director</h4><p class="text-text-muted">Strengthens Club engagement and member experience.</p></div>
+                <div class="bg-card-bg border border-border-color rounded-lg p-6 hover:bg-bg-elev transition-colors"><h4 class="text-lg font-poppins font-semibold text-text-primary mb-2"><i class="fas fa-globe mr-2 text-lead-accent"></i> International Service Director</h4><p class="text-text-muted">Drives global collaboration and cultural exchange.</p></div>
+                <div class="bg-card-bg border border-border-color rounded-lg p-6 hover:bg-bg-elev transition-colors"><h4 class="text-lg font-poppins font-semibold text-text-primary mb-2"><i class="fas fa-user-graduate mr-2 text-lead-accent"></i> Professional Development Director</h4><p class="text-text-muted">Builds skills through training and mentorship.</p></div>
+                <div class="bg-card-bg border border-border-color rounded-lg p-6 hover:bg-bg-elev transition-colors"><h4 class="text-lg font-poppins font-semibold text-text-primary mb-2"><i class="fas fa-handshake mr-2 text-lead-accent"></i> Rotary–Rotaract Relationship Officer</h4><p class="text-text-muted">Fosters partnership with Rotary and external networks.</p></div>
               </div>
             </article>
           </div>
         </div>
       </section>
 
-      <section id="ipp-ips" class="block" data-section="ippips">
-        <div class="container">
-          <div class="block-header">
-            <h2>IPP & IPS — Thoughts & Wishes</h2>
-            <p class="section-subtitle">Messages from our Immediate Past President and Secretary</p>
+      <section id="ipp-ips" class="py-16 sm:py-20 lg:py-24 reveal" data-section="ippips">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12 sm:mb-16">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-poppins font-bold text-text-primary mb-4">IPP & IPS — Thoughts & Wishes</h2>
+            <p class="text-lg sm:text-xl text-text-muted max-w-2xl mx-auto">Messages from our Immediate Past President and Secretary</p>
           </div>
 
-          <div class="leadership-profiles">
+          <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
             <!-- IPP Profile -->
             <div class="profile-container">
-              <div class="profile-card">
+              <div class="profile-card bg-card-bg border border-border-color rounded-xl overflow-hidden hover:bg-bg-elev transition-colors">
                 <div class="profile-image">
-                  <img src="assets/leadership/IPP.png" alt="Immediate Past President" loading="lazy">
+                  <img src="assets/leadership/IPP.png" alt="Immediate Past President" class="w-full h-64 sm:h-80 object-cover" loading="lazy">
                 </div>
-                <div class="profile-content">
+                <div class="profile-content p-6 sm:p-8">
                   <div class="profile-header">
-                    <h3>Rtr. Aditya Verma </h3>
-                    <p class="role">Immediate Past President</p>
-                    <div class="divider"></div>
+                    <h3 class="text-xl sm:text-2xl font-poppins font-bold text-text-primary mb-2">Rtr. Aditya Verma</h3>
+                    <p class="text-primary font-medium mb-4">Immediate Past President</p>
+                    <div class="h-1 bg-gradient-to-r from-primary to-transparent mb-6"></div>
                   </div>
                   
                   <div class="profile-message">
-                    <p class="excerpt">I, Rtr. Aditya Verma, Immediate Past President of this club...</p>
-                    <div class="full-message">
-                      <p>Dear Rotaract Family,</p>
-                      <p>I, Rtr. Aditya Verma, Immediate Past President of this club, envision a united, purpose-driven organization where every member leads with integrity, serves with passion and creates a lasting impact on our community.</p>
-                      <p>It has been an honor serving as your President, and I look forward to seeing the club continue to grow and make an impact.</p>
-                      <p>Warm regards,</p>
-                      <div class="signature">Rtr. Aditya Verma</div>
+                    <p class="text-text-muted mb-4">I, Rtr. Aditya Verma, Immediate Past President of this club...</p>
+                    <div class="full-message hidden">
+                      <p class="text-text-muted mb-4">Dear Rotaract Family,</p>
+                      <p class="text-text-muted mb-4">I, Rtr. Aditya Verma, Immediate Past President of this club, envision a united, purpose-driven organization where every member leads with integrity, serves with passion and creates a lasting impact on our community.</p>
+                      <p class="text-text-muted mb-4">It has been an honor serving as your President, and I look forward to seeing the club continue to grow and make an impact.</p>
+                      <p class="text-text-muted mb-4">Warm regards,</p>
+                      <div class="signature text-text-primary font-semibold">Rtr. Aditya Verma</div>
                     </div>
                   </div>
                   
-                  <div class="profile-meta">
-                    <span class="term"><i class="fas fa-calendar-alt"></i> 2024 Term</span>
-                    <button class="read-more" aria-expanded="false" aria-controls="ipp-message">
+                  <div class="profile-meta flex items-center justify-between mt-6">
+                    <span class="text-text-muted text-sm"><i class="fas fa-calendar-alt mr-2"></i> 2024 Term</span>
+                    <button class="read-more text-primary hover:text-primary-700 font-medium text-sm flex items-center" aria-expanded="false" aria-controls="ipp-message">
                       <span class="read-text">Read Full Message</span>
-                      <span class="read-less">Show Less</span>
-                      <i class="fas fa-chevron-down"></i>
+                      <span class="read-less hidden">Show Less</span>
+                      <i class="fas fa-chevron-down ml-2 transition-transform"></i>
                     </button>
                   </div>
                 </div>
@@ -179,37 +294,34 @@
 
             <!-- IPS Profile -->
             <div class="profile-container">
-              <div class="profile-card">
+              <div class="profile-card bg-card-bg border border-border-color rounded-xl overflow-hidden hover:bg-bg-elev transition-colors">
                 <div class="profile-image">
-                  <img src="assets/leadership/IPS.jpg" alt="Immediate Past Secretary" loading="lazy">
+                  <img src="assets/leadership/IPS.jpg" alt="Immediate Past Secretary" class="w-full h-64 sm:h-80 object-cover" loading="lazy">
                 </div>
-                <div class="profile-content">
+                <div class="profile-content p-6 sm:p-8">
                   <div class="profile-header">
-                    <h3>Rtr. Sanjivani Patil </h3>
-                    <p class="role">Immediate Past Secretary</p>
-                    <div class="divider"></div>
+                    <h3 class="text-xl sm:text-2xl font-poppins font-bold text-text-primary mb-2">Rtr. Sanjivani Patil</h3>
+                    <p class="text-primary font-medium mb-4">Immediate Past Secretary</p>
+                    <div class="h-1 bg-gradient-to-r from-primary to-transparent mb-6"></div>
                   </div>
                   
                   <div class="profile-message">
-                    <p class="excerpt">I, Rtr. Sanjivani Patil, Immediate Past Secretary of this club...</p>
-                    <div class="full-message">
-                      <p>Hello Rotaractors,</p>
-                      <p>Hello Rotaractors,
-
-Serving as the Secretary of this club has been a truly enriching experience. This term taught me the value of discipline, teamwork and clear communication in building a strong and efficient organization. From documenting our journey to supporting every initiative behind the scenes, it has been a privilege to contribute to the smooth functioning of our club.
-</p>
-                      <p>I am grateful for the trust, cooperation and support extended by the board and members throughout the year. I look forward to seeing the club continue to grow, achieve greater milestones and create meaningful impact in the times ahead</p>
-                      <p>Best regards,</p>
-                      <div class="signature">Rtr. Sanjivani Patil </div>
+                    <p class="text-text-muted mb-4">I, Rtr. Sanjivani Patil, Immediate Past Secretary of this club...</p>
+                    <div class="full-message hidden">
+                      <p class="text-text-muted mb-4">Hello Rotaractors,</p>
+                      <p class="text-text-muted mb-4">Serving as the Secretary of this club has been a truly enriching experience. This term taught me the value of discipline, teamwork and clear communication in building a strong and efficient organization. From documenting our journey to supporting every initiative behind the scenes, it has been a privilege to contribute to the smooth functioning of our club.</p>
+                      <p class="text-text-muted mb-4">I am grateful for the trust, cooperation and support extended by the board and members throughout the year. I look forward to seeing the club continue to grow, achieve greater milestones and create meaningful impact in the times ahead</p>
+                      <p class="text-text-muted mb-4">Best regards,</p>
+                      <div class="signature text-text-primary font-semibold">Rtr. Sanjivani Patil</div>
                     </div>
                   </div>
                   
-                  <div class="profile-meta">
-                    <span class="term"><i class="fas fa-calendar-alt"></i> 2024 Term</span>
-                    <button class="read-more" aria-expanded="false" aria-controls="ips-message">
+                  <div class="profile-meta flex items-center justify-between mt-6">
+                    <span class="text-text-muted text-sm"><i class="fas fa-calendar-alt mr-2"></i> 2024 Term</span>
+                    <button class="read-more text-primary hover:text-primary-700 font-medium text-sm flex items-center" aria-expanded="false" aria-controls="ips-message">
                       <span class="read-text">Read Full Message</span>
-                      <span class="read-less">Show Less</span>
-                      <i class="fas fa-chevron-down"></i>
+                      <span class="read-less hidden">Show Less</span>
+                      <i class="fas fa-chevron-down ml-2 transition-transform"></i>
                     </button>
                   </div>
                 </div>
@@ -219,7 +331,7 @@ Serving as the Secretary of this club has been a truly enriching experience. Thi
         </div>
       </section>
 
-      <section id="leadership" class="block" data-section="leadership">
+      <section id="leadership" class="block reveal" data-section="leadership">
         <div class="container">
           <div class="block-header">
             <h2>Our Leadership</h2>
@@ -368,6 +480,22 @@ Serving as the Secretary of this club has been a truly enriching experience. Thi
                 </div>
               </div>
 
+              <!-- Professional Assistant Officer -->
+              <div class="leader-card" tabindex="0">
+                <div class="leader-photo">
+                  <img src="assets/leadership/PAO.jpg" alt="Professional Assistant Officer" loading="lazy">
+                </div>
+                <div class="leader-details">
+                  <h3>Rtr. Sai Krishna Ambekar</h3>
+                  <p class="leader-role">Professional Assistant Officer (PAO)</p>
+                  <p class="leader-bio">Supporting professional development initiatives and assisting with career advancement programs while coordinating skill-building workshops and mentorship opportunities for club members.</p>
+                  <div class="leader-social">
+                    <a href="mailto:rtr.saikrishnaambekar@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+                    <a href="https://www.linkedin.com/in/sai-krishna-ambekar" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+
               <div class="leader-card" tabindex="0">
                 <div class="leader-photo">
                   <img src="assets/leadership/CSD.jpeg" alt="IS Director" loading="lazy">
@@ -385,7 +513,7 @@ Serving as the Secretary of this club has been a truly enriching experience. Thi
 
               <div class="leader-card" tabindex="0">
                 <div class="leader-photo">
-                  <img src="assets/leadership/" alt="CSD" loading="lazy">
+                  <img src="assets/leadership" alt="CSD" loading="lazy">
                 </div>
                 <div class="leader-details">
                   <h3>Rtr. Avishkar Lonkar  </h3>
@@ -483,7 +611,7 @@ and opportunities and for formulating and developing appropriate activities for 
         </div>
       </section>
 
-      <section id="events" class="block" data-section="events">
+      <section id="events" class="block reveal" data-section="events">
         <div class="container">
           <div class="block-header">
             <h2>Events</h2>
@@ -631,7 +759,7 @@ and opportunities and for formulating and developing appropriate activities for 
         </div>
       </div>
 
-      <section id="membership" class="block" data-section="membership">
+      <section id="membership" class="block reveal" data-section="membership">
         <div class="container">
           <div class="block-header">
             <h2>Membership</h2>
@@ -723,7 +851,7 @@ No experience needed — just the passion to serve, lead and grow.</p>
         </div>
       </section>
 
-      <section id="resources" class="block" data-section="resources">
+      <section id="resources" class="block reveal" data-section="resources">
         <div class="container">
           <div class="block-header">
             <h2>Resources</h2>
@@ -1088,5 +1216,8 @@ No experience needed — just the passion to serve, lead and grow.</p>
     <script src="js/scripts.js"></script>
     <script src="js/ipp-ips.js"></script>
     <script src="js/image-zoom.js"></script>
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+      <i class="fas fa-chevron-up"></i>
+    </button>
   </body>
 </html>

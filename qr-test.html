@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Code for RAC SSPU Website</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            background: #021826; 
+            color: #DFF6FF;
+        }
+        .qr-container { 
+            margin: 20px auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            display: inline-block;
+        }
+        .link { 
+            font-size: 18px; 
+            color: #00A8D4; 
+            word-break: break-all;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>📱 Scan to Test on Mobile</h1>
+    <div class="qr-container">
+        <!-- QR Code for http://192.168.1.25:8000 -->
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=http://192.168.1.25:8000" alt="QR Code" />
+    </div>
+    <div class="link">
+        <strong>Direct Link:</strong><br>
+        http://192.168.1.25:8000
+    </div>
+    <p><em>Make sure your device is on the same WiFi network!</em></p>
+</body>
+</html>
